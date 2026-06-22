@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peacock Gap · Red Tees — Shot Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0C2117; --bg2:#081710;
+    --paper:#F4EFE2; --paper2:#EAE2CF;
+    --ink:#1E3026; --ink-soft:#5E6E62;
+    --teal:#0E8A86; --teal-bright:#16A89E;
+    --flag:#D2552F; --flag-deep:#B23F1E;
+    --sand:#E6CB80;
+    --fairway:#5FA06A; --fairway-soft:#D8E8D6;
+    --green-surface:#73BD82; --water:#62AECB;
+    --line:rgba(30,48,38,.16);
+    --shadow:0 18px 40px -22px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% -10%, #14301f 0%, var(--bg) 45%, var(--bg2) 100%) fixed;
+    color:var(--paper);
+    font-family:Inter,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:540px;margin:0 auto;padding:0 14px env(safe-area-inset-bottom) 14px;}
+
+  /* ---------- Top bar ---------- */
+  .top{
+    position:sticky;top:0;z-index:30;
+    background:linear-gradient(180deg, rgba(8,23,16,.96), rgba(8,23,16,.82) 70%, rgba(8,23,16,0));
+    backdrop-filter:blur(6px);
+    padding:14px 2px 10px;
+  }
+  .brandrow{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .brand{display:flex;flex-direction:column;line-height:1;}
+  .brand .feather{display:flex;align-items:center;gap:7px;}
+  .brand h1{
+    font-family:Fraunces,serif;font-weight:600;letter-spacing:.01em;
+    font-size:21px;margin:0;color:var(--paper);
+  }
+  .brand .sub{
+    font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--teal-bright);margin-top:5px;
+  }
+  .bagbtn{
+    border:1px solid rgba(244,239,226,.25);background:rgba(244,239,226,.06);
+    color:var(--paper);border-radius:999px;padding:9px 14px;font-size:12.5px;font-weight:600;
+    display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;
+  }
+  .bagbtn:active{transform:scale(.97)}
+  .bagbtn svg{width:15px;height:15px}
+
+  .tabs{display:flex;gap:6px;margin-top:12px;}
+  .tab{
+    flex:1;text-align:center;padding:8px 0;border-radius:10px;cursor:pointer;
+    font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(244,239,226,.6);background:rgba(244,239,226,.05);
+    border:1px solid transparent;
+  }
+  .tab.active{color:var(--bg);background:var(--paper);border-color:var(--paper);}
+
+  /* ---------- Hole picker ---------- */
+  .picker{display:flex;gap:6px;overflow-x:auto;padding:12px 2px 4px;scrollbar-width:none;}
+  .picker::-webkit-scrollbar{display:none}
+  .pchip{
+    flex:0 0 auto;width:34px;height:40px;border-radius:9px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    background:rgba(244,239,226,.06);border:1px solid rgba(244,239,226,.10);
+    color:rgba(244,239,226,.72);font-weight:600;font-size:14px;
+  }
+  .pchip .pp{font-size:8px;font-family:"Space Mono",monospace;opacity:.7}
+  .pchip.active{background:var(--flag);border-color:var(--flag);color:#fff;box-shadow:0 6px 16px -8px var(--flag)}
+  .ninelabel{
+    flex:0 0 auto;align-self:center;padding:0 6px;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:rgba(244,239,226,.4);font-family:"Space Mono",monospace;
+  }
+
+  /* ---------- Hole card ---------- */
+  .card{
+    background:var(--paper);color:var(--ink);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;margin-top:8px;
+  }
+  .card.swap{animation:swap .32s cubic-bezier(.2,.7,.2,1)}
+  @keyframes swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .hhead{
+    display:flex;align-items:stretch;gap:14px;padding:16px 16px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  .hnum{
+    font-family:Fraunces,serif;font-weight:600;font-size:46px;line-height:.85;color:var(--ink);
+    display:flex;flex-direction:column;
+  }
+  .hnum small{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.2em;color:var(--ink-soft);margin-bottom:4px;font-weight:700}
+  .hmeta{display:flex;flex-direction:column;justify-content:center;gap:7px;flex:1}
+  .badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge{
+    font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 9px;border-radius:7px;border:1px solid var(--line);color:var(--ink-soft);
+    font-family:"Space Mono",monospace;
+  }
+  .badge.par{color:#fff;border:none}
+  .badge.p3{background:var(--teal)} .badge.p4{background:#3f7d52} .badge.p5{background:#9a6b2f}
+  .yard{display:flex;align-items:baseline;gap:6px}
+  .yard b{font-family:"Space Mono",monospace;font-size:30px;font-weight:700;color:var(--flag)}
+  .yard span{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-family:"Space Mono",monospace}
+
+  .diagram{padding:6px 8px 0;display:flex;justify-content:center;background:linear-gradient(180deg,var(--paper),#efe8d7)}
+  .diagram svg{width:100%;max-width:330px;height:auto;display:block}
+
+  .plan{padding:6px 16px 16px}
+  .shot{
+    display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);
+  }
+  .shot:last-child{border-bottom:none}
+  .stepdot{
+    flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:12px;color:#fff;background:var(--ink);
+  }
+  .shot.green .stepdot{background:var(--flag)}
+  .shot-main{flex:1;min-width:0}
+  .shot-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;font-family:"Space Mono",monospace}
+  .shot-club{font-size:17px;font-weight:600;color:var(--ink);margin-top:2px}
+  .shot-yds{flex:0 0 auto;font-family:"Space Mono",monospace;font-weight:700;font-size:16px;color:var(--ink);text-align:right}
+  .shot-yds small{display:block;font-size:9px;color:var(--ink-soft);font-weight:400;letter-spacing:.1em}
+
+  .note{
+    margin-top:12px;background:#efe7d4;border-radius:12px;padding:12px 13px;
+    font-size:13.5px;line-height:1.5;color:#3a4a3f;border-left:3px solid var(--teal);
+  }
+  .note.alt{border-left-color:var(--sand);font-style:italic;color:#5a4a2c;background:#f3ebd6}
+  .note.water{border-left-color:var(--water);background:#e7f0f3;color:#27535f}
+  .note .nlab{font-weight:700;font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:3px;opacity:.8}
+
+  /* ---------- Nav ---------- */
+  .nav{display:flex;gap:10px;margin-top:12px}
+  .nav button{
+    flex:1;padding:14px;border-radius:14px;border:1px solid rgba(244,239,226,.18);
+    background:rgba(244,239,226,.06);color:var(--paper);font-weight:600;font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .nav button:active{transform:scale(.98)}
+  .nav button.primary{background:var(--flag);border-color:var(--flag)}
+  .nav button:disabled{opacity:.35}
+
+  /* ---------- Card / overview ---------- */
+  .sheet{background:var(--paper);color:var(--ink);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-top:8px}
+  .sheet h2{font-family:Fraunces,serif;font-weight:600;font-size:18px;margin:0;padding:16px 16px 4px}
+  .sheet .csub{padding:0 16px 12px;font-size:12px;color:var(--ink-soft)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  thead th{
+    font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:700;padding:8px 6px;text-align:right;border-bottom:1.5px solid var(--ink)
+  }
+  thead th:first-child,tbody td:first-child{text-align:center}
+  thead th:nth-child(5),tbody td:nth-child(5){text-align:left}
+  tbody td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  tbody td:first-child{font-weight:700}
+  tbody tr.tot td{font-weight:700;border-top:1.5px solid var(--ink);background:#efe7d4}
+  tbody tr.sep td{background:#efe7d4;font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);text-align:left;padding:5px 8px}
+  .cclub{font-weight:600}
+  .capp{color:var(--ink-soft)}
+
+  /* ---------- Bag drawer ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(6,16,11,.6);backdrop-filter:blur(2px);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .drawer{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;max-width:540px;margin:0 auto;
+    background:var(--paper);color:var(--ink);border-radius:22px 22px 0 0;
+    transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.7,.2,1);
+    max-height:86vh;display:flex;flex-direction:column;box-shadow:0 -20px 50px -20px rgba(0,0,0,.6);
+  }
+  .drawer.open{transform:none}
+  .dhead{padding:16px 18px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .dhead .grab{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:38px;height:4px;border-radius:3px;background:rgba(30,48,38,.2)}
+  .dhead h3{font-family:Fraunces,serif;font-weight:600;font-size:18px;margin:0}
+  .dhead p{margin:3px 0 0;font-size:12px;color:var(--ink-soft)}
+  .dbody{overflow-y:auto;padding:8px 14px 4px}
+  .clubrow{display:flex;align-items:center;gap:12px;padding:8px 4px;border-bottom:1px solid var(--line)}
+  .clubrow label{flex:1;font-weight:600;font-size:14px}
+  .clubrow .stepper{display:flex;align-items:center;gap:8px}
+  .clubrow input{
+    width:64px;text-align:center;font-family:"Space Mono",monospace;font-weight:700;font-size:16px;
+    padding:8px 4px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);
+  }
+  .clubrow input:focus{outline:2px solid var(--teal);outline-offset:1px}
+  .clubrow .yd{font-size:11px;color:var(--ink-soft);font-family:"Space Mono",monospace}
+  .clubrow .pm{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .dfoot{padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;border-top:1px solid var(--line)}
+  .dfoot button{flex:1;padding:13px;border-radius:13px;font-weight:600;font-size:14px;cursor:pointer;border:none}
+  .dfoot .reset{background:transparent;border:1px solid var(--line);color:var(--ink-soft)}
+  .dfoot .done{background:var(--ink);color:var(--paper)}
+
+  .foot{text-align:center;color:rgba(244,239,226,.4);font-size:10.5px;line-height:1.6;padding:20px 10px 30px;font-family:"Space Mono",monospace}
+  .foot a{color:rgba(244,239,226,.6)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media print{
+    body{background:#fff}.top,.nav,.foot,.bagbtn,.picker{display:none}
+    .card,.sheet{box-shadow:none;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brandrow">
+      <div class="brand">
+        <div class="feather">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8 6 6 10 6 14c0 4 2.7 6 6 6s6-2 6-6c0-4-2-8-6-12Z" fill="#16A89E"/><circle cx="12" cy="13" r="3.1" fill="#0C2117"/><circle cx="12" cy="13" r="1.4" fill="#D2552F"/></svg>
+          <h1>Peacock Gap</h1>
+        </div>
+        <div class="sub">Red Tees · Par 71 · 4,828 yds</div>
+      </div>
+      <button class="bagbtn" id="openBag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M9 12v4M15 12v4"/></svg>
+        My Bag
+      </button>
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-view="plan">Hole plan</div>
+      <div class="tab" data-view="card">Full card</div>
+    </div>
+  </header>
+
+  <div id="pickerWrap"></div>
+  <main id="view"></main>
+
+  <div class="foot">
+    Built for your game · Red tees from your workbook · Par &amp; index from the official scorecard.<br>
+    Hole diagrams are schematic — drawn to your distances, not to satellite scale.
+  </div>
+</div>
+
+<!-- Bag drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="My bag">
+  <div class="dhead"><span class="grab"></span>
+    <div><h3>My bag</h3><p>Your real carry/total yardages. Every hole updates as you type.</p></div>
+  </div>
+  <div class="dbody" id="bagBody"></div>
+  <div class="dfoot">
+    <button class="reset" id="resetBag">Reset defaults</button>
+    <button class="done" id="doneBag">Done</button>
+  </div>
+</aside>
+
+<script>
+/* ----------------------- Data ----------------------- */
+const HOLES = [
+  {n:1, par:4, hcp:7,  red:337, note:"Solid two-shotter and the #7 stroke hole. Find the short grass, then a mid-iron to the heart of the green. No need to force the tee shot if it brings trouble into play."},
+  {n:2, par:4, hcp:3,  red:270, note:"Short on paper but the #3 handicap — there's a reason it bites. A smooth tee shot that leaves a full wedge beats chasing the green. Take your medicine if you're out of position."},
+  {n:3, par:3, hcp:9,  red:121, note:"Short-iron par 3. Pick your number, commit, and aim for the middle. Pin-hunting here costs more than it pays."},
+  {n:4, par:5, hcp:13, red:403, note:"A gettable three-shotter. Position the tee shot, lay up to your favourite wedge number, and you've got a real birdie look."},
+  {n:5, par:4, hcp:1,  red:306, note:"The #1 handicap hole — par is a great score. Keep the tee shot in play and aim for the fat of the green; bogey beats a blow-up."},
+  {n:6, par:3, hcp:5,  red:113, water:true, note:"Water guards the front — this is a 'never short' hole. Take one more club than feels right and favour centre-to-back."},
+  {n:7, par:4, hcp:15, red:213, note:"Driveable, but the percentage play is a club that leaves a full, comfortable wedge. Going for the green only pays if the miss is safe."},
+  {n:8, par:5, hcp:17, red:394, note:"The gentlest par 5 (#17 index) — a chance to pick up a shot. Two clean swings can leave a short pitch; don't get greedy."},
+  {n:9, par:4, hcp:11, red:295, note:"Short par 4 to close the front. Position over power — leave yourself a full-swing number into the green."},
+  {n:10,par:3, hcp:18, red:103, note:"The shortest hole on the card. A stock wedge to the middle — make your three and move on."},
+  {n:11,par:4, hcp:6,  red:317, note:"A tougher two-shotter (#6). Fairway first, then a mid-short iron. Centre of the green is the smart target."},
+  {n:12,par:5, hcp:8,  red:420, note:"Longest hole from the reds. Treat it as a true three-shotter: advance it twice, then a full wedge in."},
+  {n:13,par:3, hcp:2,  red:132, note:"Don't let the #2 index fool you on a par 3 — respect it. Enough club to reach the middle, and take your par."},
+  {n:14,par:5, hcp:16, red:395, note:"Another reachable-ish par 5. Lay back to a number you love rather than forcing it; wedges win here."},
+  {n:15,par:4, hcp:12, red:289, note:"Short par 4. A controlled tee shot that leaves a full wedge is the play; then take dead aim with a full swing."},
+  {n:16,par:3, hcp:10, red:121, water:true, note:"An inlet fronts the green — short is wet. Club up, aim centre, be a touch long rather than wet."},
+  {n:17,par:4, hcp:14, red:248, note:"Short par 4 — tempting, but position beats distance. Leave a stock wedge and take dead aim."},
+  {n:18,par:4, hcp:4,  red:351, note:"Strong closing hole (#4). Commit to a fairway-finder off the tee, then a mid-iron to the centre. Finish with a smart par."}
+];
+
+const CLUBS = [
+  {key:"Dr", name:"Driver",  def:195},
+  {key:"3w", name:"3-Wood",  def:180},
+  {key:"5w", name:"5-Wood",  def:170},
+  {key:"Hy", name:"Hybrid",  def:160},
+  {key:"5i", name:"5-Iron",  def:150},
+  {key:"6i", name:"6-Iron",  def:140},
+  {key:"7i", name:"7-Iron",  def:130},
+  {key:"8i", name:"8-Iron",  def:120},
+  {key:"9i", name:"9-Iron",  def:110},
+  {key:"PW", name:"Pitching Wedge", def:100},
+  {key:"GW", name:"Gap Wedge", def:88},
+  {key:"SW", name:"Sand Wedge", def:72},
+  {key:"LW", name:"Lob Wedge", def:58}
+];
+
+/* ----------------------- State ----------------------- */
+let bag = loadBag();
+let current = 0;       // hole index
+let view = "plan";
+
+function loadBag(){
+  const d = {}; CLUBS.forEach(c=>d[c.key]=c.def);
+  try{
+    const raw = localStorage.getItem("pg_red_bag");
+    if(raw){ const s = JSON.parse(raw); CLUBS.forEach(c=>{ if(typeof s[c.key]==="number") d[c.key]=s[c.key]; }); }
+  }catch(e){/* sandbox: in-memory only */}
+  return d;
+}
+function saveBag(){ try{ localStorage.setItem("pg_red_bag", JSON.stringify(bag)); }catch(e){} }
+
+/* ----------------------- Engine ----------------------- */
+function bagSorted(){ return CLUBS.map(c=>({name:c.name,key:c.key,yds:bag[c.key]})).sort((a,b)=>a.yds-b.yds); }
+function shortest(){ return Math.min(...CLUBS.map(c=>bag[c.key])); }
+function longest(){ return Math.max(...CLUBS.map(c=>bag[c.key])); }
+function stockWedge(){ return bag.GW; }                 // favourite full wedge number
+function longFairway(){ return Math.max(bag["3w"],bag["5w"],bag.Hy); }
+
+// nearest club that reaches d (smallest yds >= d-3); fallback longest club
+function clubFor(d){
+  const s = bagSorted();
+  for(const c of s){ if(c.yds >= d-3) return c; }
+  return s[s.length-1];
+}
+
+function planFor(h){
+  const D = bag.Dr, shots = []; let alt=null;
+  if(h.par===3){
+    const c = clubFor(h.red);
+    shots.push({label:"To the green", club:c.name, yds:h.red, dist:h.red, kind:"green"});
+  } else if(h.par===4){
+    if(h.red <= D + 12){                                  // driveable
+      const layback = h.red - stockWedge();
+      const tee = clubFor(layback);
+      const appYds = h.red - tee.yds;
+      const app = clubFor(appYds);
+      shots.push({label:"Off the tee", club:tee.name, yds:tee.yds, dist:tee.yds, kind:"tee"});
+      shots.push({label:"Approach", club:app.name, yds:appYds, dist:h.red, kind:"green"});
+      alt = "Feeling bold? Driver can chase the green (~"+D+"y) — but only if the miss is safe.";
+    } else {
+      const rem = h.red - D;
+      if(rem < shortest()-3){                              // awkward partial -> lay back
+        const tee = clubFor(h.red - stockWedge());
+        const appYds = h.red - tee.yds;
+        const app = clubFor(appYds);
+        shots.push({label:"Off the tee", club:tee.name, yds:tee.yds, dist:tee.yds, kind:"tee"});
+        shots.push({label:"Approach", club:app.name, yds:appYds, dist:h.red, kind:"green"});
+        alt = "Driver would leave only ~"+rem+"y — an in-between partial. The lay-back hands you a full swing.";
+      } else {
+        const app = clubFor(rem);
+        shots.push({label:"Off the tee", club:"Driver", yds:D, dist:D, kind:"tee"});
+        shots.push({label:"Approach", club:app.name, yds:rem, dist:h.red, kind:"green"});
+      }
+    }
+  } else {                                                 // par 5
+    const after = h.red - D;
+    if(after <= longFairway()){
+      const c = clubFor(after);
+      shots.push({label:"Off the tee", club:"Driver", yds:D, dist:D, kind:"tee"});
+      shots.push({label:"Go for it", club:c.name, yds:after, dist:h.red, kind:"green"});
+      alt = "Or lay up to your wedge number for a stress-free par — your call on the day.";
+    } else {
+      const layDist = after - stockWedge();
+      const lay = clubFor(layDist);
+      const third = h.red - (D + lay.yds);
+      const app = clubFor(third);
+      shots.push({label:"Off the tee", club:"Driver", yds:D, dist:D, kind:"tee"});
+      shots.push({label:"Lay up", club:lay.name, yds:lay.yds, dist:D+lay.yds, kind:"lay"});
+      shots.push({label:"Approach", club:app.name, yds:third, dist:h.red, kind:"green"});
+    }
+  }
+  return {shots, alt};
+}
+
+/* ----------------------- Diagram ----------------------- */
+function diagram(h, plan){
+  const W=300,H=448, teeY=404, greenY=66, cx=150;
+  const y = d => teeY - (Math.max(0,Math.min(d,h.red))/h.red)*(teeY-greenY);
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic of hole ${h.n}">`;
+
+  // corridor
+  if(h.par>3){
+    s += `<path d="M${cx-44},${teeY-6} Q${cx-58},${(teeY+greenY)/2} ${cx-30},${greenY+24} L${cx+30},${greenY+24} Q${cx+58},${(teeY+greenY)/2} ${cx+44},${teeY-6} Z" fill="rgba(95,160,106,.20)" stroke="rgba(95,160,106,.45)" stroke-width="1"/>`;
+    // schematic bunkers
+    s += `<ellipse cx="${cx-40}" cy="${y(h.red*0.55)}" rx="13" ry="8" fill="var(--sand)" opacity=".85"/>`;
+    s += `<ellipse cx="${cx+34}" cy="${greenY+30}" rx="12" ry="7" fill="var(--sand)" opacity=".85"/>`;
+  } else {
+    s += `<ellipse cx="${cx}" cy="${greenY+34}" rx="14" ry="8" fill="var(--sand)" opacity=".8"/>`;
+  }
+
+  // water for 6 & 16 (front of green)
+  if(h.water){
+    s += `<path d="M${cx-40},${greenY+30} q10,-7 20,0 q10,7 20,0 q10,-7 20,0 l0,14 q-10,7 -20,0 q-10,-7 -20,0 q-10,7 -20,0 Z" fill="var(--water)" opacity=".85"/>`;
+    s += `<text x="${cx}" y="${greenY+44}" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#0C2117" opacity=".7">WATER</text>`;
+  }
+
+  // green + flag
+  s += `<ellipse cx="${cx}" cy="${greenY}" rx="34" ry="21" fill="var(--green-surface)" stroke="#4f9560" stroke-width="1.4"/>`;
+  s += `<line x1="${cx+4}" y1="${greenY-2}" x2="${cx+4}" y2="${greenY-34}" stroke="#1E3026" stroke-width="1.6"/>`;
+  s += `<path d="M${cx+4},${greenY-34} L${cx+20},${greenY-29} L${cx+4},${greenY-24} Z" fill="var(--flag)"/>`;
+  s += `<circle cx="${cx+4}" cy="${greenY}" r="2.2" fill="#1E3026"/>`;
+
+  // tee
+  s += `<rect x="${cx-9}" y="${teeY}" width="18" height="9" rx="3" fill="#1E3026"/>`;
+  s += `<text x="${cx}" y="${teeY+24}" text-anchor="middle" font-family="Space Mono" font-size="8" fill="var(--ink-soft)" letter-spacing="1">TEE · ${h.red}y</text>`;
+
+  // shot path through cumulative landing points
+  let pts = [{x:cx,d:0}];
+  let side = 1;
+  plan.shots.forEach((sh,i)=>{
+    let px = cx;
+    if(sh.kind!=="green"){ px = cx + side*14; side*=-1; }
+    pts.push({x:px,d:sh.dist,kind:sh.kind,sh});
+  });
+  // ensure final point sits at green center
+  pts[pts.length-1].x = cx;
+
+  // draw connecting line
+  let dline = `M${pts[0].x},${y(pts[0].d)}`;
+  for(let i=1;i<pts.length;i++){ dline += ` L${pts[i].x},${y(pts[i].d)}`; }
+  s += `<path d="${dline}" fill="none" stroke="#1E3026" stroke-width="1.6" stroke-dasharray="3 3" opacity=".55"/>`;
+
+  // landing dots + pills
+  let pside = 1;
+  plan.shots.forEach((sh)=>{
+    const py = y(sh.dist);
+    const px = (sh.kind==="green") ? cx : pts.find(p=>p.sh===sh).x;
+    if(sh.kind!=="green"){
+      s += `<circle cx="${px}" cy="${py}" r="6.5" fill="#1E3026" stroke="#F4EFE2" stroke-width="1.6"/>`;
+    }
+    // pill
+    const label = sh.club + " · " + sh.yds + "y";
+    const pillW = Math.max(58, label.length*6.0 + 14);
+    let pillX = (sh.kind==="green") ? cx+40 : px + (px<=cx? -(pillW+10) : 10);
+    if(sh.kind==="green") pillX = cx - pillW/2; // center under green numbers
+    let pillY = (sh.kind==="green") ? py-2 : py-9;
+    if(sh.kind==="green"){ pillY = greenY+ (h.water?58:46); pillX = cx - pillW/2; }
+    const fill = sh.kind==="green" ? "var(--flag)" : "#1E3026";
+    s += `<g><rect x="${pillX}" y="${pillY}" width="${pillW}" height="18" rx="9" fill="${fill}"/>`+
+         `<text x="${pillX+pillW/2}" y="${pillY+12.5}" text-anchor="middle" font-family="Space Mono" font-weight="700" font-size="9" fill="#F4EFE2">${label}</text></g>`;
+  });
+
+  s += `</svg>`;
+  return s;
+}
+
+/* ----------------------- Render: plan ----------------------- */
+function renderPlan(){
+  const h = HOLES[current];
+  const plan = planFor(h);
+  const parClass = h.par===3?"p3":h.par===4?"p4":"p5";
+  let shotsHtml = plan.shots.map((sh,i)=>`
+    <div class="shot ${sh.kind==='green'?'green':''}">
+      <div class="stepdot">${i+1}</div>
+      <div class="shot-main">
+        <div class="shot-label">${sh.label}</div>
+        <div class="shot-club">${sh.club}</div>
+      </div>
+      <div class="shot-yds">${sh.yds}y<small>${sh.kind==='green'?'TO PIN':'CARRIES'}</small></div>
+    </div>`).join("");
+
+  let notes = `<div class="note"><span class="nlab">Strategy</span>${h.note}</div>`;
+  if(h.water) notes += `<div class="note water"><span class="nlab">Water short</span>${h.n===6?"The green sits behind water — favour one extra club. A long miss is always better than a wet one.":"An inlet fronts the green — anything short finds it. Commit to enough club and aim at the centre."}</div>`;
+  if(plan.alt) notes += `<div class="note alt"><span class="nlab">Option</span>${plan.alt}</div>`;
+
+  document.getElementById("view").innerHTML = `
+    <article class="card swap">
+      <div class="hhead">
+        <div class="hnum"><small>HOLE</small>${h.n}</div>
+        <div class="hmeta">
+          <div class="badges">
+            <span class="badge par ${parClass}">Par ${h.par}</span>
+            <span class="badge">HCP ${h.hcp}</span>
+          </div>
+          <div class="yard"><b>${h.red}</b><span>yds · red</span></div>
+        </div>
+      </div>
+      <div class="diagram">${diagram(h,plan)}</div>
+      <div class="plan">
+        ${shotsHtml}
+        ${notes}
+      </div>
+    </article>
+    <div class="nav">
+      <button id="prev" ${current===0?'disabled':''}>&larr; Hole ${current===0?'':current}</button>
+      <button id="next" class="primary" ${current===17?'disabled':''}>${current===17?'Finish':'Hole '+(current+2)+' &rarr;'}</button>
+    </div>`;
+
+  document.getElementById("prev").onclick=()=>{ if(current>0){current--; renderPlan(); syncPicker(); }};
+  document.getElementById("next").onclick=()=>{ if(current<17){current++; renderPlan(); syncPicker(); }};
+}
+
+/* ----------------------- Render: full card ----------------------- */
+function renderCard(){
+  let rows="";
+  const block = (a,b,label)=>{
+    rows += `<tr class="sep"><td colspan="6">${label}</td></tr>`;
+    let pSum=0,ySum=0;
+    for(let i=a;i<=b;i++){
+      const h=HOLES[i], plan=planFor(h);
+      const tee = plan.shots[0], green = plan.shots[plan.shots.length-1];
+      pSum+=h.par; ySum+=h.red;
+      rows += `<tr>
+        <td>${h.n}</td><td>${h.par}</td><td>${h.hcp}</td><td>${h.red}</td>
+        <td><span class="cclub">${tee.club} ${tee.yds}y</span><br><span class="capp">in: ${green.club} ${green.yds}y</span></td>
+      </tr>`;
+    }
+    return {pSum,ySum};
+  };
+  const front=block(0,8,"Front nine");
+  const back=block(9,17,"Back nine");
+  rows += `<tr class="tot"><td>TOT</td><td>${front.pSum+back.pSum}</td><td>—</td><td>${front.ySum+back.ySum}</td><td>${longest()}y driver · GW ${bag.GW}y</td></tr>`;
+
+  document.getElementById("view").innerHTML = `
+    <section class="sheet">
+      <h2>Your full shot card</h2>
+      <div class="csub">Recommended tee club and approach for every hole, tuned to your bag. Tap “My Bag” to adjust.</div>
+      <table>
+        <thead><tr><th>#</th><th>Par</th><th>Idx</th><th>Yds</th><th>Plan</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>`;
+}
+
+/* ----------------------- Picker ----------------------- */
+function renderPicker(){
+  if(view!=="plan"){ document.getElementById("pickerWrap").innerHTML=""; return; }
+  let chips="";
+  HOLES.forEach((h,i)=>{
+    if(i===9) chips += `<span class="ninelabel">In</span>`;
+    if(i===0) chips = `<span class="ninelabel">Out</span>`+chips;
+    chips += `<button class="pchip ${i===current?'active':''}" data-i="${i}"><span>${h.n}</span><span class="pp">P${h.par}</span></button>`;
+  });
+  document.getElementById("pickerWrap").innerHTML = `<div class="picker" id="picker">${chips}</div>`;
+  document.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>{current=+b.dataset.i; renderPlan(); syncPicker();});
+}
+function syncPicker(){
+  document.querySelectorAll(".pchip").forEach(b=>b.classList.toggle("active",+b.dataset.i===current));
+  const el=document.querySelector(".pchip.active"); if(el) el.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
+}
+
+/* ----------------------- Bag drawer ----------------------- */
+function renderBag(){
+  document.getElementById("bagBody").innerHTML = CLUBS.map(c=>`
+    <div class="clubrow">
+      <label>${c.name}</label>
+      <div class="stepper">
+        <button class="pm" data-k="${c.key}" data-d="-5">−</button>
+        <input type="number" inputmode="numeric" id="in_${c.key}" value="${bag[c.key]}" min="0" max="400" step="1">
+        <button class="pm" data-k="${c.key}" data-d="5">+</button>
+        <span class="yd">yds</span>
+      </div>
+    </div>`).join("");
+  CLUBS.forEach(c=>{
+    document.getElementById("in_"+c.key).oninput=e=>{ const v=parseInt(e.target.value,10); if(!isNaN(v)){ bag[c.key]=v; saveBag(); refresh(); } };
+  });
+  document.querySelectorAll(".pm").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k, d=+b.dataset.d; bag[k]=Math.max(0,(bag[k]||0)+d);
+    document.getElementById("in_"+k).value=bag[k]; saveBag(); refresh();
+  });
+}
+function openBag(){ document.getElementById("scrim").classList.add("open"); document.getElementById("drawer").classList.add("open"); }
+function closeBag(){ document.getElementById("scrim").classList.remove("open"); document.getElementById("drawer").classList.remove("open"); }
+
+/* ----------------------- Wiring ----------------------- */
+function refresh(){ view==="plan"?renderPlan():renderCard(); }
+function setView(v){
+  view=v;
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===v));
+  renderPicker(); refresh(); if(v==="plan") syncPicker();
+}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>setView(t.dataset.view));
+document.getElementById("openBag").onclick=openBag;
+document.getElementById("doneBag").onclick=closeBag;
+document.getElementById("scrim").onclick=closeBag;
+document.getElementById("resetBag").onclick=()=>{ CLUBS.forEach(c=>bag[c.key]=c.def); saveBag(); renderBag(); refresh(); };
+
+// swipe between holes
+let tx=0;
+document.getElementById("view").addEventListener("touchstart",e=>{tx=e.changedTouches[0].clientX},{passive:true});
+document.getElementById("view").addEventListener("touchend",e=>{
+  if(view!=="plan")return; const dx=e.changedTouches[0].clientX-tx;
+  if(dx<-50&&current<17){current++;renderPlan();syncPicker();}
+  if(dx>50&&current>0){current--;renderPlan();syncPicker();}
+},{passive:true});
+
+renderBag(); renderPicker(); renderPlan(); syncPicker();
+</script>
+</body>
+</html>
